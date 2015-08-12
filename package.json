@@ -1,0 +1,17 @@
+{
+  "name": "Test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/protractor/bin protractor ./config/conf.js && ./node_modules/bin/webdriver-manager start"
+  },
+  "author": "Giuseppe DiBella",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^3.2.0",
+    "chai-as-promised": "^5.1.0",
+    "mocha": "^2.2.5",
+    "protractor": "^2.1.0"
+  }
+}
