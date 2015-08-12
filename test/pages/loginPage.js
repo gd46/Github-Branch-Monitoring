@@ -57,26 +57,55 @@ var LoginPage = (function() {
     browser.sleep(2000);
   }
   
-  LoginPage.prototype.checkBranchStatus = function(cb) {
-    var tmp = [];
+//  LoginPage.prototype.checkBranchStatus = function(cb) {
+//    var tmp = [];
+//    var valid = true;
+//     element.all(by.xpath("//div[@class='a-b-count-widget']/div[1]/div")).then(function(els){
+//       els.forEach(function(text){
+//       text.getText().then(function(count){
+//         var int = parseInt(count);
+//         tmp.push(int);
+//         if(int > 0){
+//           valid = false;
+//         }
+//         if(els.length == tmp.length){
+//           cb(valid,tmp);
+//         }
+//       });
+//      });
+//    });
+//    browser.sleep(5000);
+//  }
+  LoginPage.prototype.checkBranchStatus = function (cb) {
+    var branchObject = {};
     var valid = true;
-     element.all(by.xpath("//div[@class='a-b-count-widget']/div[1]/div")).then(function(els){
-       els.forEach(function(text){
-       text.getText().then(function(count){
-         var int = parseInt(count);
-         tmp.push(int);
-         if(int > 0){
-           valid = false;
-         }
-         if(els.length == tmp.length){
-           cb(valid,tmp);
-         }
+    var num = 0;
+    element.all(by.xpath("//div[@class='branch-summary js-branch-row']")).then(function(row){
+      row.forEach(function(summary, index){
+      if(index == 0){
+        return;
+      }
+     summary.element(by.css("a.branch-name")).getText().then(function(branchName){
+         var name = branchName;
+         summary.element(by.css("div.count-behind")).getText().then(function(count){
+           num = parseInt(count);
+           if(num > 0){
+             valid = false;
+             branchObject[name] = num;
+             console.log(branchName, num);
+           }
+           console.log(row.count, index);
+           
+           if((row.count -1) == index){
+             
+             return cb(branchObject, valid);
+           }
+         });
        });
       });
     });
     browser.sleep(5000);
   }
-  
   
   return LoginPage;
 })();
