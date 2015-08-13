@@ -79,6 +79,9 @@ var LoginPage = (function() {
     var branchObject = {};
     var valid = true;
     var num = 0;
+    var isPresent = checkNextButtonisPresent();
+    var text = nextButtonGetText();
+    
     element.all(by.xpath("//div[@class='branch-summary js-branch-row']")).then(function(row){
       row.forEach(function(summary, index){
      summary.element(by.css("a.branch-name")).getText().then(function(branchName){
@@ -104,6 +107,9 @@ var LoginPage = (function() {
 //                  if(text == "Next"){
 //                    while(isPresent == true && text == "Next"){
 //                      this.pageNext.click();
+//                      browser.sleep(2000);
+//                      isPresent = false;
+//                      this.checkBranchStatus(cb);
 //                      console.log("test");
 //                    }
 ////                    this.pageNext.click();
@@ -113,43 +119,41 @@ var LoginPage = (function() {
 //                })
 //              }
 //            })
-            //return cb(branchObject, valid);
-            var isPresent = this.checkNextButtonisPresent();
-            var text = this.nextButtonGetText(); 
-            if(isPresent == true){
-              if(text == "Next"){
-                while(isPresent == true && text == "Next"){
-                  this.pageNext.click();
-                  browser.sleep(5000);
-                  this.checkBranchStatus(cb);
-                  browser.sleep(5000);
-                  isPresent;
-                  text;
-                }
-                return cb(branchObject, valid);
-              }
+//            isPresent = checkNextButtonisPresent();
+//            text = nextButtonGetText();
+            browser.sleep(5000);
+            console.log("Present " + isPresent, "text " + text);
+            while(isPresent == true && text == "Next"){
+              this.pageNext.click();
+              browser.sleep(5000);
+              console.log("second page");
+              isPresent = checkNextButtonisPresent();
+              text = nextButtonGetText();
             }
-          } // End of first page check
+            return cb(branchObject, valid);
+          }
          });
        });
       });
     });
     browser.sleep(5000);
   }
-  
-  LoginPage.prototype.checkNextButtonisPresent = function () {
-    this.pageNext.isPresent().then(function(isPresent){
-      return isPresent;
-    })
-  }
-  
-  LoginPage.prototype.nextButtonGetText = function () { 
-    this.pageNext.getText().then(function(text){
-      return text;
-    })
-  }
-  
+
   return LoginPage;
 })();
 
 module.exports = LoginPage;
+
+function checkNextButtonisPresent() {
+  this.pageNext = element(by.xpath("//div[@class='pagination']/a"));
+  return this.pageNext.isPresent().then(function(isPresent){
+    return isPresent;
+  })
+}
+
+function nextButtonGetText() {
+  this.pageNext = element(by.xpath("//div[@class='pagination']/a"));
+  return this.pageNext.getText().then(function(text){
+    return text;
+  })
+}
