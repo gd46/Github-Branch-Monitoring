@@ -31,11 +31,13 @@ describe("Track Branch Status in Comparison to Master", function(){
   
   it("should check all branch status against master", function(done){
     page.gotoAllBranchesPage();
+//    page.pageNext = element(by.linkText("Next"));
+//            page.pageNext.click();
+//            browser.sleep(5000);
     page.checkBranchStatus(function(branchObject, valid){
       console.log(branchObject, valid);
       assert.isTrue(valid, "Branches are not up to date with master");
     });
-
     // Add assert 
     done();
   });

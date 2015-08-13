@@ -14,7 +14,7 @@ var LoginPage = (function() {
     this.searchField = element(by.xpath("//*[@id='site-container']/div/div/div[1]/div[1]/form/div[2]/input"));
     this.branchesLink = element(by.xpath("//*[@id='js-repo-pjax-container']/div[2]/div/div/ul/li[2]/a"));
     this.allBranchesLink = element(by.xpath("//*[@id='js-repo-pjax-container']/div/div[1]/nav/a[5]"));
-    this.pageNext = element(by.xpath("//div[@class='pagination']/a"));
+//    this.pageNext = element(by.xpath("//div[@class='pagination']/a"));
   }
 
   LoginPage.prototype.gotoLoginPage = function() {
@@ -84,11 +84,14 @@ var LoginPage = (function() {
       row.forEach(function(summary, index){
       // Scope issues, index here works fine, but gets messed up when trying to 
       // use in the if statement below. 
-      if(index == 0){
-        return;
-      }
+//      if(index == 0){
+//        return;
+//      }
      summary.element(by.css("a.branch-name")).getText().then(function(branchName){
          var name = branchName;
+         if(name === "master"){
+           return;
+         }
          summary.element(by.css("div.count-behind")).getText().then(function(count){
            
            num = parseInt(count);
@@ -99,12 +102,18 @@ var LoginPage = (function() {
            }
            
           if((row.length -1) == index){
+            //this.pageNext = element(by.xpath("//div[@class='pagination']/a"));
+//            this.pageNext.isEnabled().then(function(isEnabled){
+//              while(isEnabled == true){
+//                console.log("TEST " + isEnabled);
+//                this.pageNext.click();
+//                this.checkBranchStatus(cb);
+//              }
+//            })
             return cb(branchObject, valid);
           }
          });
        });
-        //console.log("Index " + index);
-        //console.log("Row " + row.length);
       });
     });
     browser.sleep(5000);
