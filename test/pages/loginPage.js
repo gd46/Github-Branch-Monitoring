@@ -79,8 +79,6 @@ var LoginPage = (function() {
     var branchObject = {};
     var valid = true;
     var num = 0;
-    var isPresent = checkNextButtonisPresent();
-    var text = nextButtonGetText();
     
     element.all(by.xpath("//div[@class='branch-summary js-branch-row']")).then(function(row){
       row.forEach(function(summary, index){
@@ -121,15 +119,16 @@ var LoginPage = (function() {
 //            })
 //            isPresent = checkNextButtonisPresent();
 //            text = nextButtonGetText();
-            browser.sleep(5000);
-            console.log("Present " + isPresent, "text " + text);
-            while(isPresent == true && text == "Next"){
-              this.pageNext.click();
-              browser.sleep(5000);
-              console.log("second page");
-              isPresent = checkNextButtonisPresent();
-              text = nextButtonGetText();
-            }
+        
+            var pageNext = element(by.xpath("//div[@class='pagination']/a"));
+            pageNext.isPresent().then(function(isPresent){
+              if(isPresent == true){
+                pageNext.click();
+                browser.sleep(5000);
+                console.log("second page");
+                //return cb(branchObject, valid);
+              }
+            })
             return cb(branchObject, valid);
           }
          });
@@ -144,16 +143,16 @@ var LoginPage = (function() {
 
 module.exports = LoginPage;
 
-function checkNextButtonisPresent() {
-  this.pageNext = element(by.xpath("//div[@class='pagination']/a"));
-  return this.pageNext.isPresent().then(function(isPresent){
-    return isPresent;
-  })
-}
-
-function nextButtonGetText() {
-  this.pageNext = element(by.xpath("//div[@class='pagination']/a"));
-  return this.pageNext.getText().then(function(text){
-    return text;
-  })
-}
+//function checkNextButtonisPresent() {
+//  this.pageNext = element(by.xpath("//div[@class='pagination']/a"));
+//  return this.pageNext.isPresent().then(function(isPresent){
+//    return isPresent;
+//  })
+//}
+//
+//function nextButtonGetText() {
+//  this.pageNext = element(by.xpath("//div[@class='pagination']/a"));
+//  return this.pageNext.getText().then(function(text){
+//    return text;
+//  })
+//}
