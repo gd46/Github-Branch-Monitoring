@@ -8,13 +8,12 @@ var LoginPage = (function() {
     this.submitButton = element(by.xpath("//input[@type='submit']"));
     this.profileDropdown = element(by.xpath("//*[@id='user-links']/li[3]/a"));
     this.yourProfileLink = element(by.xpath("//*[@id='user-links']/li[3]/div/div/a[1]"));
-//    this.orgLink = element(by.xpath("//img[@alt='@mykabam']"));
     this.orgLink = element(by.xpath("//img[@alt='" + account.credentials.org +  "']"));
     this.searchForm= element(by.xpath("//*[@id='site-container']/div/div/div[1]/div[1]/form"));
     this.searchField = element(by.xpath("//*[@id='site-container']/div/div/div[1]/div[1]/form/div[2]/input"));
     this.branchesLink = element(by.xpath("//*[@id='js-repo-pjax-container']/div[2]/div/div/ul/li[2]/a"));
     this.allBranchesLink = element(by.xpath("//*[@id='js-repo-pjax-container']/div/div[1]/nav/a[5]"));
-//    this.pageNext = element(by.xpath("//div[@class='pagination']/a"));
+    this.pageNext = element(by.xpath("//div[@class='pagination']/a"));
   }
 
   LoginPage.prototype.gotoLoginPage = function() {
@@ -82,11 +81,6 @@ var LoginPage = (function() {
     var num = 0;
     element.all(by.xpath("//div[@class='branch-summary js-branch-row']")).then(function(row){
       row.forEach(function(summary, index){
-      // Scope issues, index here works fine, but gets messed up when trying to 
-      // use in the if statement below. 
-//      if(index == 0){
-//        return;
-//      }
      summary.element(by.css("a.branch-name")).getText().then(function(branchName){
          var name = branchName;
          if(name === "master"){
@@ -102,21 +96,57 @@ var LoginPage = (function() {
            }
            
           if((row.length -1) == index){
-            //this.pageNext = element(by.xpath("//div[@class='pagination']/a"));
-//            this.pageNext.isEnabled().then(function(isEnabled){
-//              while(isEnabled == true){
-//                console.log("TEST " + isEnabled);
-//                this.pageNext.click();
-//                this.checkBranchStatus(cb);
+            
+//            this.pageNext = element(by.xpath("//div[@class='pagination']/a"));
+//            this.pageNext.isPresent().then(function(isPresent){
+//              if(isPresent == true){
+//                this.pageNext.getText().then(function(text){
+//                  if(text == "Next"){
+//                    while(isPresent == true && text == "Next"){
+//                      this.pageNext.click();
+//                      console.log("test");
+//                    }
+////                    this.pageNext.click();
+////                    browser.sleep(5000);
+//                  }
+//                  return cb(branchObject, valid);
+//                })
 //              }
 //            })
-            return cb(branchObject, valid);
-          }
+            //return cb(branchObject, valid);
+            var isPresent = this.checkNextButtonisPresent();
+            var text = this.nextButtonGetText(); 
+            if(isPresent == true){
+              if(text == "Next"){
+                while(isPresent == true && text == "Next"){
+                  this.pageNext.click();
+                  browser.sleep(5000);
+                  this.checkBranchStatus(cb);
+                  browser.sleep(5000);
+                  isPresent;
+                  text;
+                }
+                return cb(branchObject, valid);
+              }
+            }
+          } // End of first page check
          });
        });
       });
     });
     browser.sleep(5000);
+  }
+  
+  LoginPage.prototype.checkNextButtonisPresent = function () {
+    this.pageNext.isPresent().then(function(isPresent){
+      return isPresent;
+    })
+  }
+  
+  LoginPage.prototype.nextButtonGetText = function () { 
+    this.pageNext.getText().then(function(text){
+      return text;
+    })
   }
   
   return LoginPage;
