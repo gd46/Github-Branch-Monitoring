@@ -82,26 +82,29 @@ var LoginPage = (function() {
     var num = 0;
     element.all(by.xpath("//div[@class='branch-summary js-branch-row']")).then(function(row){
       row.forEach(function(summary, index){
+      // Scope issues, index here works fine, but gets messed up when trying to 
+      // use in the if statement below. 
       if(index == 0){
         return;
       }
      summary.element(by.css("a.branch-name")).getText().then(function(branchName){
          var name = branchName;
          summary.element(by.css("div.count-behind")).getText().then(function(count){
+           
            num = parseInt(count);
+           
            if(num > 0){
              valid = false;
              branchObject[name] = num;
-             console.log(branchName, num);
            }
-           console.log(row.count, index);
            
-           if((row.count -1) == index){
-             
-             return cb(branchObject, valid);
-           }
+          if((row.length -1) == index){
+            return cb(branchObject, valid);
+          }
          });
        });
+        //console.log("Index " + index);
+        //console.log("Row " + row.length);
       });
     });
     browser.sleep(5000);

@@ -33,7 +33,7 @@ describe("Track Branch Status in Comparison to Master", function(){
     page.gotoAllBranchesPage();
     page.checkBranchStatus(function(branchObject, valid){
       console.log(branchObject, valid);
-      assert.isTrue(valid, "Branches are not up to date with master " + branchObject);
+      assert.isTrue(valid, "Branches are not up to date with master");
     });
 
     // Add assert 
