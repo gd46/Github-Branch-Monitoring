@@ -8,7 +8,6 @@ var LoginPage = (function() {
     this.submitButton = element(by.xpath("//input[@type='submit']"));
     this.profileDropdown = element(by.xpath("//*[@id='user-links']/li[3]/a"));
     this.yourProfileLink = element(by.xpath("//*[@id='user-links']/li[3]/div/div/a[1]"));
-//    this.orgLink = element(by.xpath("//img[@alt='@mykabam']"));
     this.orgLink = element(by.xpath("//img[@alt='" + account.credentials.org +  "']"));
     this.searchForm= element(by.xpath("//*[@id='site-container']/div/div/div[1]/div[1]/form"));
     this.searchField = element(by.xpath("//*[@id='site-container']/div/div/div[1]/div[1]/form/div[2]/input"));
@@ -57,28 +56,71 @@ var LoginPage = (function() {
     browser.sleep(2000);
   }
   
-  LoginPage.prototype.checkBranchStatus = function(cb) {
-    var tmp = [];
+//  LoginPage.prototype.checkBranchStatus = function(cb) {
+//    var tmp = [];
+//    var valid = true;
+//     element.all(by.xpath("//div[@class='a-b-count-widget']/div[1]/div")).then(function(els){
+//       els.forEach(function(text){
+//       text.getText().then(function(count){
+//         var int = parseInt(count);
+//         tmp.push(int);
+//         if(int > 0){
+//           valid = false;
+//         }
+//         if(els.length == tmp.length){
+//           cb(valid,tmp);
+//         }
+//       });
+//      });
+//    });
+//    browser.sleep(5000);
+//  }
+  LoginPage.prototype.checkBranchStatus = function (branchObject,cb) {
+    var branchObject = branchObject || {};
     var valid = true;
-     element.all(by.xpath("//div[@class='a-b-count-widget']/div[1]/div")).then(function(els){
-       els.forEach(function(text){
-       text.getText().then(function(count){
-         var int = parseInt(count);
-         tmp.push(int);
-         if(int > 0){
-           valid = false;
+    var num = 0;
+    
+    element.all(by.xpath("//div[@class='branch-summary js-branch-row']")).then(function(row){
+      row.forEach(function(summary, index){
+     summary.element(by.css("a.branch-name")).getText().then(function(branchName){
+         var name = branchName;
+         if(name === "master"){
+           return;
          }
-         if(els.length == tmp.length){
-           cb(valid,tmp);
-         }
+         summary.element(by.css("div.count-behind")).getText().then(function(count){
+           
+           num = parseInt(count);
+           
+           if(num > 0){
+             valid = false;
+             branchObject[name] = num;
+           }
+           
+          if((row.length -1) == index){
+            return cb(branchObject, valid);
+          }
+         });
        });
       });
     });
     browser.sleep(5000);
   }
-  
-  
+
   return LoginPage;
 })();
 
 module.exports = LoginPage;
+
+//function checkNextButtonisPresent() {
+//  this.pageNext = element(by.xpath("//div[@class='pagination']/a"));
+//  return this.pageNext.isPresent().then(function(isPresent){
+//    return isPresent;
+//  })
+//}
+//
+//function nextButtonGetText() {
+//  this.pageNext = element(by.xpath("//div[@class='pagination']/a"));
+//  return this.pageNext.getText().then(function(text){
+//    return text;
+//  })
+//}
