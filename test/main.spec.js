@@ -40,20 +40,30 @@ describe("Track Branch Status in Comparison to Master", function(){
     
     var nextPage = function(branchObject, valid) {
       var pageNext = element(by.xpath("//div[@class='pagination']/a"));
-        pageNext.isPresent().then(function(isPresent){
-          if(isPresent == true){
-            pageNext.getText().then(function(text){
-              if(text == "Next"){
-                pageNext.click();
-                browser.sleep(2000);
-                page.checkBranchStatus(branchObject,callback);
-              } else{
-                console.log(branchObject);
-                assert.isTrue(valid, "Branches are not up to date with master");
-              }
-            })
-          } 
-        })
+      var pagination = element(by.xpath("//div[@class='pagination']"));
+      
+      pagination.isPresent().then(function(isPresent){
+        if(isPresent == true){
+            pageNext.isPresent().then(function(isPresent){
+            if(isPresent == true){
+              pageNext.getText().then(function(text){
+                if(text == "Next"){
+                  pageNext.click();
+                  browser.sleep(2000);
+                  page.checkBranchStatus(branchObject,callback);
+                } else{
+                  console.log(branchObject);
+                  assert.isTrue(valid, "Branches are not up to date with master");
+                }
+              })
+            } 
+          })
+        } else{
+          console.log(branchObject);
+          assert.isTrue(valid, "Branches are not up to date with master");
+        }
+      })
+        
         
     }
     
