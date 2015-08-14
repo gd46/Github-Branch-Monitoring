@@ -75,8 +75,8 @@ var LoginPage = (function() {
 //    });
 //    browser.sleep(5000);
 //  }
-  LoginPage.prototype.checkBranchStatus = function (cb) {
-    var branchObject = {};
+  LoginPage.prototype.checkBranchStatus = function (branchObject,cb) {
+    var branchObject = branchObject || {};
     var valid = true;
     var num = 0;
     
@@ -97,38 +97,6 @@ var LoginPage = (function() {
            }
            
           if((row.length -1) == index){
-            
-//            this.pageNext = element(by.xpath("//div[@class='pagination']/a"));
-//            this.pageNext.isPresent().then(function(isPresent){
-//              if(isPresent == true){
-//                this.pageNext.getText().then(function(text){
-//                  if(text == "Next"){
-//                    while(isPresent == true && text == "Next"){
-//                      this.pageNext.click();
-//                      browser.sleep(2000);
-//                      isPresent = false;
-//                      this.checkBranchStatus(cb);
-//                      console.log("test");
-//                    }
-////                    this.pageNext.click();
-////                    browser.sleep(5000);
-//                  }
-//                  return cb(branchObject, valid);
-//                })
-//              }
-//            })
-//            isPresent = checkNextButtonisPresent();
-//            text = nextButtonGetText();
-        
-            var pageNext = element(by.xpath("//div[@class='pagination']/a"));
-            pageNext.isPresent().then(function(isPresent){
-              if(isPresent == true){
-                pageNext.click();
-                browser.sleep(5000);
-                console.log("second page");
-                //return cb(branchObject, valid);
-              }
-            })
             return cb(branchObject, valid);
           }
          });

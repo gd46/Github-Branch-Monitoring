@@ -31,10 +31,33 @@ describe("Track Branch Status in Comparison to Master", function(){
   
   it("should check all branch status against master", function(done){
     page.gotoAllBranchesPage();
-    page.checkBranchStatus(function(branchObject, valid){
-      console.log(branchObject, valid);
-      assert.isTrue(valid, "Branches are not up to date with master");
-    });
+    
+    var callback = function(branchObject, valid){
+      nextPage(branchObject, valid);
+      //console.log(branchObject, valid);
+      //assert.isTrue(valid, "Branches are not up to date with master");
+    }
+    
+    var nextPage = function(branchObject, valid) {
+      var pageNext = element(by.xpath("//div[@class='pagination']/a"));
+        pageNext.isPresent().then(function(isPresent){
+          if(isPresent == true){
+            pageNext.getText().then(function(text){
+              if(text == "Next"){
+                pageNext.click();
+                browser.sleep(2000);
+                page.checkBranchStatus(branchObject,callback);
+              } else{
+                console.log(branchObject);
+                assert.isTrue(valid, "Branches are not up to date with master");
+              }
+            })
+          } 
+        })
+        
+    }
+    
+    page.checkBranchStatus(null, callback);
     done();
   });
 });
