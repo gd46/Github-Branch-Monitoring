@@ -12,20 +12,24 @@ describe("Track Branch Status in Comparison to Master", function(){
   
   it("should navigate to github", function(done){
     page.gotoLoginPage();
-    assert.eventually.equal(browser.getCurrentUrl(), browser.baseUrl, 'should be on github');
+    assert.eventually.equal(browser.getCurrentUrl(), browser.baseUrl, 'should be on github login page');
     done();
   });
   
   it("should login the user in", function(done){
     page.signIn();
-    // Add assert for knowing the login was successful
+    page.isLoggedIn(function(isPresent){
+      assert.isTrue(isPresent, "Did not successfully login");
+    });
     done();
   });
   
   it("should take user to specified repo", function(done){
     page.gotoOrganization();
     page.searchForRepo();
-    // Add assert for knowing the user found repo successfully
+    page.isOnRepoPage(function(isOnRepoPage){
+      assert.isTrue(isOnRepoPage, "Not on the repo page");
+    });
     done();
   });
   
@@ -34,8 +38,6 @@ describe("Track Branch Status in Comparison to Master", function(){
     
     var callback = function(branchObject, valid){
       nextPage(branchObject, valid);
-      //console.log(branchObject, valid);
-      //assert.isTrue(valid, "Branches are not up to date with master");
     }
     
     var nextPage = function(branchObject, valid) {

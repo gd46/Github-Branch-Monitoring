@@ -32,6 +32,13 @@ var LoginPage = (function() {
     browser.sleep(2000);
   }
   
+  LoginPage.prototype.isLoggedIn = function(cb) {
+    this.profileDropdown.isPresent().then(function(isPresent){
+      return cb(isPresent);
+    });
+    browser.sleep(2000);
+  }
+  
   LoginPage.prototype.gotoOrganization = function() {
     this.profileDropdown.click();
     browser.sleep(2000);
@@ -49,6 +56,17 @@ var LoginPage = (function() {
     browser.sleep(2000);
   }
   
+  LoginPage.prototype.isOnRepoPage = function(cb) {
+    var urlOrg = account.credentials.org.substring(1);
+    var urlRepo = browser.baseUrl + urlOrg + "/" + account.credentials.repo;
+    browser.getCurrentUrl().then(function(actualUrl){
+      if(actualUrl == urlRepo){
+        return cb(true);
+      } else {
+        return cb(false);
+      }
+    })
+  }
   LoginPage.prototype.gotoAllBranchesPage = function() {
     this.branchesLink.click();
     browser.sleep(2000);
@@ -56,25 +74,6 @@ var LoginPage = (function() {
     browser.sleep(2000);
   }
   
-//  LoginPage.prototype.checkBranchStatus = function(cb) {
-//    var tmp = [];
-//    var valid = true;
-//     element.all(by.xpath("//div[@class='a-b-count-widget']/div[1]/div")).then(function(els){
-//       els.forEach(function(text){
-//       text.getText().then(function(count){
-//         var int = parseInt(count);
-//         tmp.push(int);
-//         if(int > 0){
-//           valid = false;
-//         }
-//         if(els.length == tmp.length){
-//           cb(valid,tmp);
-//         }
-//       });
-//      });
-//    });
-//    browser.sleep(5000);
-//  }
   LoginPage.prototype.checkBranchStatus = function (branchObject,cb) {
     var branchObject = branchObject || {};
     var valid = true;
@@ -110,17 +109,3 @@ var LoginPage = (function() {
 })();
 
 module.exports = LoginPage;
-
-//function checkNextButtonisPresent() {
-//  this.pageNext = element(by.xpath("//div[@class='pagination']/a"));
-//  return this.pageNext.isPresent().then(function(isPresent){
-//    return isPresent;
-//  })
-//}
-//
-//function nextButtonGetText() {
-//  this.pageNext = element(by.xpath("//div[@class='pagination']/a"));
-//  return this.pageNext.getText().then(function(text){
-//    return text;
-//  })
-//}
